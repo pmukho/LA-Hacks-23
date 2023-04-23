@@ -4,31 +4,61 @@ import Test from './pages/Test';
 import { NativeRouter, Route, Routes } from 'react-router-native';
 import { StyleSheet, Switch, View } from 'react-native';
 import Navbar from './components/Navbar';
+import { AppProvider, UserProvider } from '@realm/react';
+import { useState } from 'react';
 
 export default function App() {
-  // return (
-  //   <View style={styles.container}>
-  //     <Text>Open up App.js to start working on your app!</Text>
-  //     <StatusBar style="auto" />
-  //   </View>
-  // );
-  return (
-    // <BrowserRouter>
-    //   {/* <NavBar /> */}
-    //   <Routes>
-    //     <Route exact path="/" element={<Home />} />
-    //     <Route path="/test" element={<Test />} />
-    //   </Routes>
-    // </BrowserRouter>
-    <NativeRouter>
+  const [user, setUser] = useState(null);
+  const app = useApp();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const currentUser = app.currentUser;
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        try {
+          await app.logIn(Realm.Credentials.anonymous());
+          setUser(app.currentUser);
+        } catch (error) {
+          console.error('Failed to log in', error);
+        }
+      }
+    };
+    checkUser();
+  }, [app]);
+
+  if (!user) {
+    return (
       <View style={styles.container}>
-        <Navbar />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/test" element={<Test />} />
-        </Routes>
+        <Text>Loading...</Text>
       </View>
-    </NativeRouter>
+    );
+  }
+  
+  return (
+    // <NativeRouter>
+    //   <View style={styles.container}>
+    //     <Navbar />
+    //     <Routes>
+    //       <Route exact path="/" element={<Home />} />
+    //       <Route path="/test" element={<Test />} />
+    //     </Routes>
+    //   </View>
+    // </NativeRouter>
+    <AppProvider id="application-0-zsjvp">
+      <UserProvider fallback={LoginComponent}>
+        <NativeRouter>
+          <View style={styles.container}>
+            <Navbar />
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route path="/test" element={<Test />} />
+            </Routes>
+          </View>
+        </NativeRouter>
+      </UserProvider>
+    </AppProvider>
   );
 }
 
