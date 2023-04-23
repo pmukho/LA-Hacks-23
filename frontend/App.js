@@ -1,9 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Home from './pages/Home';
 import Test from './pages/Test';
-import NavBar from './components/NavBar';
+import { NativeRouter, Route, Routes } from 'react-router-native';
+import { StyleSheet, Switch, View } from 'react-native';
+import Navbar from './components/Navbar';
 
 export default function App() {
   // return (
@@ -13,13 +13,22 @@ export default function App() {
   //   </View>
   // );
   return (
-    <BrowserRouter>
-      {/* <NavBar /> */}
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/test" element={<Test />} />
-      </Routes>
-    </BrowserRouter>
+    // <BrowserRouter>
+    //   {/* <NavBar /> */}
+    //   <Routes>
+    //     <Route exact path="/" element={<Home />} />
+    //     <Route path="/test" element={<Test />} />
+    //   </Routes>
+    // </BrowserRouter>
+    <NativeRouter>
+      <View style={styles.container}>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/test" element={<Test />} />
+        </Routes>
+      </View>
+    </NativeRouter>
   );
 }
 
@@ -31,3 +40,29 @@ export default function App() {
 //     justifyContent: 'center',
 //   },
 // });
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 25,
+    padding: 10
+  },
+  header: {
+    fontSize: 20
+  },
+  nav: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  navItem: {
+    flex: 1,
+    alignItems: "center",
+    padding: 10
+  },
+  subNavItem: {
+    padding: 5
+  },
+  topic: {
+    textAlign: "center",
+    fontSize: 15
+  }
+});
